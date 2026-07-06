@@ -5,7 +5,7 @@ import torch
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 
-from examples.Helmholtz.problem import helmholtz_3D
+from examples.helmholtz.problem import helmholtz_3D
 from multipinn import *
 from multipinn.utils import (
     initialize_model,

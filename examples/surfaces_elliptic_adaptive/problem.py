@@ -15,8 +15,22 @@ def sphere():
         "u, u_x, u_y, u_z, u_xx, u_yy, u_zz, u_xy, u_xz, u_yz")
     basic_symbols = symbols("x, y, z")
 
-    pols = torch.tensor([[0., 0., 1.], [0., 0., -1.], [1., 0., 0.], [-1., 0., 0.], [0., 1., 0.], [0., -1., 0.], [np.sqrt(0.5), 0.5, 0.5], [0.5, np.sqrt(0.5), 0.5],
-                        [0.5, 0.5, np.sqrt(0.5)], [-np.sqrt(0.5), 0.5, 0.5], [0.5, -np.sqrt(0.5), 0.5], [0.5, 0.5, -np.sqrt(0.5)]], device=('cuda:0'), dtype=torch.float)
+    pols_base = torch.tensor(
+    [
+        [0., 0., 1.],
+        [0., 0., -1.],
+        [1., 0., 0.],
+        [-1., 0., 0.],
+        [0., 1., 0.],
+        [0., -1., 0.],
+        [np.sqrt(0.5), 0.5, 0.5],
+        [0.5, np.sqrt(0.5), 0.5],
+        [0.5, 0.5, np.sqrt(0.5)],
+        [-np.sqrt(0.5), 0.5, 0.5],
+        [0.5, -np.sqrt(0.5), 0.5],
+        [0.5, 0.5, -np.sqrt(0.5)],
+    ],
+    dtype=torch.float32)
 
     def surface(model, arg):
         u, u_x, u_y, u_z, u_xx, u_yy, u_zz, u_xy, u_xz, u_yz = inner_symbols(
@@ -28,6 +42,7 @@ def sphere():
         return [eq1,]
 
     def points_c(model, arg):
+        pols = pols_base.to(device=arg.device, dtype=arg.dtype)
         u = model(pols)
         return [abs(u.flatten() - solution(pols).flatten())]
 

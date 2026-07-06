@@ -1,5 +1,5 @@
 problem:
-  name: "surfaces_parabolic"
+  name: "surfaces_hyperbolic"
 
 model:
   type: FNN

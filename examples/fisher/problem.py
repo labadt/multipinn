@@ -2,7 +2,7 @@ from typing import List
 
 import torch
 import numpy as np
-from multipinn.condition import Condition, Symbols, ConditionExtra, ConditionStatic
+from multipinn.condition import Condition, Symbols, ConditionExtra
 from multipinn.geometry import *
 
 
@@ -21,9 +21,6 @@ def fisher_problem():
         u, _, _, _, _, _, _, _ = inner_symbols(model, arg)
         x, y, z, t = basic_symbols(model, arg)
         init_func = u - 5*torch.exp((-1)*((x-50)**2+(y-50)**2+(z-50)**2)/50)
-        print(torch.linalg.norm(u))
-        print(torch.linalg.norm(5*torch.exp((-1)*((x-50)**2+(y-50)**2+(z-50)**2)/50)))
-        print(torch.linalg.norm(init_func))
         return [init_func]
 
     def bc(model, arg, data):

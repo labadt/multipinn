@@ -160,7 +160,9 @@ class Symbols:
     def __hot_one_vector(self, var: str) -> str:
         hot_one = ["0"] * self.input_dim
         hot_one[self.variables.index(var)] = "1"
-        return f"torch.Tensor([[" + self.__join_as_tuple(hot_one) + "]])"
+        return ("torch.tensor([["
+    + self.__join_as_tuple(hot_one)
+    + "]], device=arg.device, dtype=arg.dtype)")
 
     def __children_diff_first(self, var: str) -> List[str]:
         return [f"{fun}_{var}" for fun in self.functions]

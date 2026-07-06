@@ -107,10 +107,9 @@ class Condition:
         """
         # Get device from model parameters
         device = next(model.parameters()).device
-        arg_point = (
-            torch.tensor(self.geometry.bbox[0], device=device) + torch.tensor(self.geometry.bbox[1], device=device)
-        ) * 0.5  # center
-        arg_point = arg_point.reshape(1, -1).requires_grad_()
+        low = torch.as_tensor(self.geometry.bbox[0], dtype=torch.float32, device=device)
+        high = torch.as_tensor(self.geometry.bbox[1], dtype=torch.float32, device=device)
+        arg_point = ((low + high) * 0.5).reshape(1, -1).requires_grad_()
         self.output_len = len(self.get_residual_fn(model)(arg_point))
 
 

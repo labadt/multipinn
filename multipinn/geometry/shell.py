@@ -352,22 +352,7 @@ class ShellIntersection(BaseShell):
 
 
 class ProductShellDomain(BaseShell):
-    """Cartesian product of a shell and a domain.
-
-    Creates a higher-dimensional shell by taking the product of a shell with a domain.
-    The resulting shell has dimension equal to the sum of the input dimensions.
-
-    Args:
-        shell (BaseShell): The shell component
-        geom (Domain): The domain component
-
-    Raises:
-        ValueError: If shell and domain have different dimensions
-    """
-
     def __init__(self, shell: BaseShell, geom: Domain):
-        if shell.dim != geom.dim:
-            raise ValueError("Dimensions do not match")
         super().__init__(
             shell.dim + geom.dim,
             (
@@ -380,53 +365,18 @@ class ProductShellDomain(BaseShell):
         self.geom = geom
 
     def __shell_part(self, x):
-        """Extract the shell component coordinates from points.
-
-        Args:
-            x (np.ndarray): Points with shape (n, dim)
-
-        Returns:
-            np.ndarray: Shell component coordinates with shape (n, shell.dim)
-        """
         return x[:, : self.shell.dim]
 
-    def on_boundary(self, x) -> Union[np.ndarray, bool]:
-        """Check if points are on the product boundary.
-
-        Args:
-            x (np.ndarray): Points to check with shape (n, dim)
-
-        Returns:
-            Union[np.ndarray, bool]: Boolean mask indicating which points are on boundary
-        """
+    def on_boundary(self, x):
         return self.shell.on_boundary(self.__shell_part(x))
 
     def random_points(self, n, random="pseudo"):
-        """Generate random points on the product boundary.
-
-        Args:
-            n (int): Number of points to generate
-            random (str, optional): Random number generation method
-
-        Returns:
-            np.ndarray: Array of random boundary points with shape (n, dim)
-        """
         return np.concatenate(
             (self.shell.random_points(n, random), self.geom.random_points(n, random)),
             axis=1,
         )
 
     def boundary_normal(self, x):
-        """Compute unit normal vectors at given boundary points.
-
-        The normal vectors have components only in the shell dimensions.
-
-        Args:
-            x (np.ndarray): Points on boundary with shape (n, dim)
-
-        Returns:
-            np.ndarray: Normal vectors at each point with shape (n, dim)
-        """
         return np.concatenate(
             (
                 self.shell.boundary_normal(self.__shell_part(x)),
@@ -437,85 +387,34 @@ class ProductShellDomain(BaseShell):
 
 
 class ProductDomainShell(BaseShell):
-    """Cartesian product of a domain and a shell.
-
-    Creates a higher-dimensional shell by taking the product of a domain with a shell.
-    The resulting shell has dimension equal to the sum of the input dimensions.
-    Similar to ProductShellDomain but with components in reverse order.
-
-    Args:
-        geom (Domain): The domain component
-        shell (BaseShell): The shell component
-
-    Raises:
-        ValueError: If domain and shell have different dimensions
-    """
-
     def __init__(self, geom: Domain, shell: BaseShell):
-        if shell.dim != geom.dim:
-            raise ValueError("Dimensions do not match")
         super().__init__(
-            shell.dim + geom.dim,
+            geom.dim + shell.dim,
             (
-                np.concatenate((shell.bbox[0], geom.bbox[0])),
-                np.concatenate((shell.bbox[1], geom.bbox[1])),
+                np.concatenate((geom.bbox[0], shell.bbox[0])),
+                np.concatenate((geom.bbox[1], shell.bbox[1])),
             ),
-            np.hypot(shell.diam, geom.diam),
+            np.hypot(geom.diam, shell.diam),
         )
-        self.shell = shell
         self.geom = geom
+        self.shell = shell
 
     def __shell_part(self, x):
-        """Extract the shell component coordinates from points.
+        return x[:, self.geom.dim:]
 
-        Args:
-            x (np.ndarray): Points with shape (n, dim)
-
-        Returns:
-            np.ndarray: Shell component coordinates with shape (n, shell.dim)
-        """
-        return x[:, self.shell.dim :]
-
-    def on_boundary(self, x) -> Union[np.ndarray, bool]:
-        """Check if points are on the product boundary.
-
-        Args:
-            x (np.ndarray): Points to check with shape (n, dim)
-
-        Returns:
-            Union[np.ndarray, bool]: Boolean mask indicating which points are on boundary
-        """
+    def on_boundary(self, x):
         return self.shell.on_boundary(self.__shell_part(x))
 
     def random_points(self, n, random="pseudo"):
-        """Generate random points on the product boundary.
-
-        Args:
-            n (int): Number of points to generate
-            random (str, optional): Random number generation method
-
-        Returns:
-            np.ndarray: Array of random boundary points with shape (n, dim)
-        """
         return np.concatenate(
             (self.geom.random_points(n, random), self.shell.random_points(n, random)),
             axis=1,
         )
 
     def boundary_normal(self, x):
-        """Compute unit normal vectors at given boundary points.
-
-        The normal vectors have components only in the shell dimensions.
-
-        Args:
-            x (np.ndarray): Points on boundary with shape (n, dim)
-
-        Returns:
-            np.ndarray: Normal vectors at each point with shape (n, dim)
-        """
         return np.concatenate(
             (
-                np.zeros_like(x[:, : self.shell.dim]),
+                np.zeros_like(x[:, : self.geom.dim]),
                 self.shell.boundary_normal(self.__shell_part(x)),
             ),
             axis=1,

@@ -1,5 +1,5 @@
 problem:
-  name: "helmholtz_adaptive"
+  name: "helmholtz"
 
 model:
   type: FNN

@@ -6,7 +6,7 @@ MULTIPINN — фреймворк для Physics-Informed Neural Networks (PINNs)
 
 Каноническая инструкция по установке и первому запуску находится в файле:
 
-- [`guide/getting_started.ipynb`](guide/getting_started.ipynb)
+- [`guide/getting_started.ipynb`](guide/getting-started.ipynb)
 
 Все пользовательские инструкции в репозитории должны использовать единый базовый вариант:
 
@@ -26,7 +26,7 @@ python -m examples.poisson_2D_1C.run_train
 
 ## Разделы документации
 
-- **Руководство пользователя** — `guide/getting_started.ipynb`
+- **Руководство пользователя** — `guide/getting-started.ipynb`
 - **Примеры** — каталог `examples/`
 - **Исходный код** — пакет `multipinn/`
 - **Тесты** — каталог `tests/`

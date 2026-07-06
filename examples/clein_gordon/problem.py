@@ -2,7 +2,7 @@ from typing import List
 
 import torch
 import numpy as np
-from multipinn.condition import Condition, Symbols, ConditionExtra,ConditionStatic
+from multipinn.condition import Condition, Symbols, ConditionExtra
 from multipinn.geometry import *
 
 

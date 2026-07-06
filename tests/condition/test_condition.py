@@ -2,6 +2,7 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 import torch
+import numpy as np
 
 from multipinn.condition import *
 from multipinn.geometry.geometry import Geometry
@@ -27,6 +28,7 @@ def mock_generator():
 @pytest.fixture
 def mock_model():
     model = Mock()
+    model.parameters.return_value = iter([torch.nn.Parameter(torch.zeros(1))])
     return model
 
 
@@ -116,6 +118,13 @@ def test_get_residual_extra(condition_extra, mock_model):
 
 def test_condition_extra_generator_for_normals(mock_geometry):
     points = torch.tensor([[0.1, 0.2]])
-    mock_geometry.boundary_normal.asaert_called_once_with(
-        points.detach().cpu().numpy()
-    )  # Ensures the function was called correctly
+    gen = ConditionExtra.generator_for_normals(mock_geometry)
+
+    normals = gen(points)
+
+    mock_geometry.boundary_normal.assert_called_once()
+    np.testing.assert_array_equal(
+        mock_geometry.boundary_normal.call_args[0][0],
+        points.detach().cpu().numpy(),
+    )
+    assert normals.device == points.device
