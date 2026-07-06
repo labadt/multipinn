@@ -255,3 +255,6 @@ To avoid contradictory instructions across the repository, use the following rul
 - treat `make install` only as a shorthand for `pip install -e .`
 - do not introduce alternative installation paths as the primary workflow unless they are synchronized here first
 
+## Full guide for users and developers
+
+[Read full guide for users and developers](https://docs.google.com/document/d/1UiArho_iPbQvwLAPaCg7ojdMlovd1ELGTU3VrW-pTp8/edit?tab=t.0)

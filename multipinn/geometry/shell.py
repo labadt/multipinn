@@ -351,6 +351,41 @@ class ShellIntersection(BaseShell):
         return self.shell.boundary_normal(x)
 
 
+class ProductShellDomain(BaseShell):
+    def __init__(self, shell: BaseShell, geom: Domain):
+        super().__init__(
+            shell.dim + geom.dim,
+            (
+                np.concatenate((shell.bbox[0], geom.bbox[0])),
+                np.concatenate((shell.bbox[1], geom.bbox[1])),
+            ),
+            np.hypot(shell.diam, geom.diam),
+        )
+        self.shell = shell
+        self.geom = geom
+
+    def __shell_part(self, x):
+        return x[:, : self.shell.dim]
+
+    def on_boundary(self, x):
+        return self.shell.on_boundary(self.__shell_part(x))
+
+    def random_points(self, n, random="pseudo"):
+        return np.concatenate(
+            (self.shell.random_points(n, random), self.geom.random_points(n, random)),
+            axis=1,
+        )
+
+    def boundary_normal(self, x):
+        return np.concatenate(
+            (
+                self.shell.boundary_normal(self.__shell_part(x)),
+                np.zeros_like(x[:, self.shell.dim :]),
+            ),
+            axis=1,
+        )
+
+
 class ProductDomainShell(BaseShell):
     def __init__(self, geom: Domain, shell: BaseShell):
         super().__init__(

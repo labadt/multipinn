@@ -32,34 +32,18 @@ def test_set_device_cpu(mock_logger):
 
 
 def test_set_device_cuda(mock_logger):
-    # Create a mock tensor with cuda device
-    mock_tensor = mock.MagicMock()
-    mock_tensor.device.type = "cuda"
-
     # Mock necessary torch functions
     with mock.patch("torch.cuda.is_available", return_value=True), \
      mock.patch("torch.cuda.set_device") as mock_cuda_set_device, \
      mock.patch("torch.set_default_device") as mock_set_device, \
      mock.patch("torch.set_default_dtype") as mock_set_dtype:
-    set_device(gpu_id=0)
-    mock_cuda_set_device.assert_called_once_with(torch.device("cuda:0"))
-    mock_set_device.assert_called_once_with(torch.device("cuda:0"))
-    mock_set_dtype.assert_called_once_with(torch.float32)
+        set_device(gpu_id=0)
+        mock_cuda_set_device.assert_called_once_with(torch.device("cuda:0"))
+        mock_set_device.assert_called_once_with(torch.device("cuda:0"))
+        mock_set_dtype.assert_called_once_with(torch.float32)
 
         # Verify logger was called
         mock_logger.info.assert_called_once_with(mock.ANY)
-
-        # Verify default dtype
-        assert str(torch.get_default_dtype()) == "torch.float32"
-
-        # Verify tensor device
-        test_tensor = torch.tensor(0)
-        assert test_tensor.device.type == "cuda"
-
-        # Verify device and dtype were set correctly
-        mock_set_device.assert_called_once_with(torch.device("cuda:0"))
-        
-        mock_set_dtype.assert_called_once_with(torch.float32)
 
 
 @pytest.mark.parametrize(

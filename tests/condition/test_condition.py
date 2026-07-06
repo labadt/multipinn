@@ -2,6 +2,7 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 import torch
+import numpy as np
 
 from multipinn.condition import *
 from multipinn.geometry.geometry import Geometry
@@ -121,6 +122,9 @@ def test_condition_extra_generator_for_normals(mock_geometry):
 
     normals = gen(points)
 
-    mock_geometry.boundary_normal.assert_called_once_with(
-        points.detach().cpu().numpy())
+    mock_geometry.boundary_normal.assert_called_once()
+    np.testing.assert_array_equal(
+        mock_geometry.boundary_normal.call_args[0][0],
+        points.detach().cpu().numpy(),
+    )
     assert normals.device == points.device
