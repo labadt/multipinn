@@ -47,11 +47,40 @@ The main files a user usually edits in an example are:
 
 ## System requirements
 
+### Minimum hardware requirements
+
+MULTIPINN is used for numerical experiments of very different computational cost,
+so hardware requirements are listed separately for three scenarios:
+
+- installing the library and running the unit tests
+- reproducing lightweight 2D experiments
+- reproducing computationally heavy 3D and multi-GPU experiments
+
+| Component | Minimum (install + unit tests) | Recommended (2D experiments) | Recommended (3D / multi-GPU experiments) |
+|---|---|---|---|
+| OS | Linux x86_64 / Windows 10+ | Linux x86_64 | Linux x86_64 |
+| CPU | 4 cores | 8 cores | 16+ cores |
+| RAM | 16 GB | 32 GB | 128 GB or more |
+| Disk | 20 GB SSD | 100 GB SSD | 200+ GB SSD |
+| GPU | Not required | NVIDIA GPU with CUDA support | NVIDIA A100 or a computationally comparable accelerator |
+| VRAM | Not required | 8–12 GB or more | 40 GB or more |
+| CUDA | Not required | Version compatible with PyTorch | Version compatible with PyTorch |
+
+The heaviest experiments reported for MULTIPINN were reproduced on a compute node
+based on an AMD EPYC 7313 CPU (16 cores, about 0.28 TFLOPS FP64) with NVIDIA A100
+class accelerators or comparable analogues. For some 3D formulations, increasing
+the number of collocation points leads to a substantial growth of VRAM
+consumption — take this into account when choosing a configuration.
+
+### Software requirements
+
 | Component | Requirement / note |
 |---|---|
 | Python | `>=3.8, <3.12` |
-| OS | Linux, macOS, Windows |
-| GPU | Optional, but strongly recommended for medium and large PDE problems |
+| OS | Linux x86_64; Windows 10/11 with a compatible Python environment; Windows 10/11 with WSL2 |
+| PyTorch | A version compatible with your CUDA installation |
+| CUDA | NVIDIA driver and CUDA runtime are required for GPU runs; not needed for CPU-only usage |
+| Other Python dependencies | See `requirements.txt` |
 | Browser for Plotly PNG export | Google Chrome / Chromium may be required by `kaleido` for static PNG export |
 | Extra graph/mesh dependencies | Some GNN / mesh examples may require compatible PyG binary wheels, see below |
 
@@ -70,7 +99,7 @@ cd multipinn
 
 #### Recommended: `venv`
 
-**Linux / macOS**
+**Linux / WSL2**
 ```bash
 python3.10 -m venv .venv
 source .venv/bin/activate
@@ -251,9 +280,11 @@ To avoid contradictory instructions across the repository, use the following rul
 
 - keep the installation command as `pip install -e .`
 - keep the supported Python range as `3.8–3.11`
+- keep the supported operating systems as Linux x86_64, Windows 10/11 and Windows 10/11 with WSL2
 - keep `docs/guide/getting-started.ipynb` as the main tutorial
 - treat `make install` only as a shorthand for `pip install -e .`
 - do not introduce alternative installation paths as the primary workflow unless they are synchronized here first
+- keep the minimum hardware requirements in the [Minimum hardware requirements](#minimum-hardware-requirements) section as the single source of truth, and mirror any change to it in `docs/index.md` and `docs/guide/getting-started.ipynb`
 
 ## Full guide for users and developers
 
