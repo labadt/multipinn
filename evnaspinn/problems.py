@@ -43,8 +43,6 @@ def ns_pipe_3d():
 
     return navier_stokes_3D_pipe(re=100)
 
-
-# task -> (problem factory, domain points, points per boundary/initial condition)
 TASKS = {
     "convection": (convection, 20_000, 2_000),
     "heat": (heat, 20_000, 2_000),
@@ -56,7 +54,6 @@ TASKS = {
 
 
 def build(task, scale=1.0):
-    """Return conditions with attached point generators, input and output dims."""
     factory, n_domain, n_bound = TASKS[task]
     conditions, input_dim, output_dim = factory()
     Generator(max(1, int(n_domain * scale)), "pseudo").use_for(conditions[0])
