@@ -15,7 +15,5 @@ pip install -e .
 python evnaspinn/nas_search.py --task convection --smoke          # pipeline check, ~1 min
 python evnaspinn/nas_search.py --task ns_curved --population 16 --generations 8
 ```
-
-Tasks: `convection`, `heat`, `allen_cahn`, `ns_block`, `ns_curved`, `ns_pipe_3d`.
 Results go to `nas_runs/<task>/`: `history.jsonl` (all evaluated candidates),
 `pareto.csv` (terminal front) and `knee.json` (selected architecture).
