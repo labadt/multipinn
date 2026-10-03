@@ -1,12 +1,3 @@
-"""EvNASPINN: multi-objective evolutionary search of PINN depth and layer widths.
-
-Objectives: physics-informed loss after a fixed training budget and log10 of the
-number of trainable parameters. Selection follows NSGA-II (non-dominated sorting
-and crowding distance). Training uses MultiPINN conditions, generators and Trainer.
-
-    python evnaspinn/nas_search.py --task ns_curved --population 16 --generations 8
-    python evnaspinn/nas_search.py --task convection --smoke
-"""
 import argparse
 import csv
 import json
@@ -31,7 +22,6 @@ MIN_LAYERS, MAX_LAYERS = 2, 10
 
 class MLP(nn.Module):
     """Fully connected PINN with GELU activations."""
-
     def __init__(self, input_dim, output_dim, hidden_layers):
         super().__init__()
         dims = [input_dim, *hidden_layers]
