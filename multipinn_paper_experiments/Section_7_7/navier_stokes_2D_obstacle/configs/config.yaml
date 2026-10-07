@@ -1,0 +1,55 @@
+problem:
+  name: "navier_stokes_2D_obstacle"
+  re: 50
+
+model:
+  type: FNN
+  params:
+    hidden_layers: [64, 128, 128, 256, 256, 128, 128, 64]
+
+model_target:
+  _target_: multipinn.neural_network.${model.type}
+
+regularization:
+  type: AdaptiveConditions
+  params:
+    lr: 1.0e-3
+
+regularization_target:
+  _target_: multipinn.regularization.${regularization.type}Losses
+
+generator:
+  domain_points: 65_536
+  bound_points: 8_192
+  sampler: "Hammersley"
+
+trainer:
+  num_epochs: 20_000
+  grid_update: null
+  random_seed: 42
+  calc_loss: "mean"
+  mixed_training: false
+
+visualization:
+  grid_plot_points: 20_000
+  save_period: 2000
+  save_mode: "png"
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.CyclicLR
+  base_lr: 1.0e-6
+  max_lr: 1.0e-3
+  step_size_up: 500
+  step_size_down: null
+  mode: exp_range
+  cycle_momentum: false
+  gamma: 0.9998
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 0.001
+
+paths:
+  save_dir: artifacts/${model.type}_reg_${regularization.type}_loss_${trainer.calc_loss}_re_${problem.re}
+  points: solutions/points.csv
+  value: solutions/re50_flow.csv

@@ -1,0 +1,48 @@
+problem:
+  name: "laplace_2d_neumann_normals"
+
+model:
+  type: FFNN
+  params:
+    hidden_layers: [128, 128, 128, 128]
+    sigma: 1.0
+    encoding_dim: 128
+    xavier_init: true
+
+model_target:
+  _target_: multipinn.neural_network.${model.type}
+
+regularization:
+  type: Constant
+  params:
+    lambdas: [1, 1, 1]
+
+regularization_target:
+  _target_: multipinn.regularization.${regularization.type}Losses
+
+generator:
+  domain_points: 4_000
+  bound_points: 1_500
+  sampler: "pseudo"
+
+trainer:
+  num_epochs: 10_000
+  grid_update: 2_000
+  random_seed: 42
+  calc_loss: "mean"
+
+visualization:
+  grid_plot_points: 20_000
+  save_period: 1000
+  save_mode: "png"
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ExponentialLR
+  gamma: 1.0
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 0.0001
+
+paths:
+  save_dir: ${hydra:runtime.cwd}/artifacts/${model.type}_${trainer.random_seed}

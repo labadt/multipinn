@@ -1,0 +1,1 @@
+torchrun --nproc_per_node=2 {path_to_problem_directory}/run_grad_equiv.py

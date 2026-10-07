@@ -1,0 +1,45 @@
+problem:
+  name: "poisson_1d"
+
+model:
+  type: FNN
+  params:
+    hidden_layers: [64, 64, 64, 64, 64, 64, 64, 64, 64]
+
+model_target:
+  _target_: multipinn.neural_network.${model.type}
+
+regularization:
+  type: null
+  params:
+    lambdas: [1, 1]
+
+regularization_target:
+  _target_: multipinn.regularization.${regularization.type}Losses
+
+generator:
+  domain_points: 3_000
+  bound_points: 512
+  sampler: "pseudo"
+
+trainer:
+  num_epochs: 15_000
+  grid_update: 20_000
+  random_seed: 42
+  calc_loss: "mean"
+
+visualization:
+  grid_plot_points: 2_000
+  save_period: 2000
+  save_mode: "png"
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ExponentialLR
+  gamma: 0.9999
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 0.001
+
+paths:
+  save_dir: ${hydra:runtime.cwd}/artifacts/${model.type}_${trainer.random_seed}
