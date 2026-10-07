@@ -34,13 +34,13 @@ def problem_2D1C_Allen_Cahn():
         f, u, x, t = basic_symbols(model, arg)
         # assert torch.all(torch.isclose(x, torch.ones_like(x) * -1))
         u_x, u_t = unpack(grad(u, arg))
-        return [u_x, u + 1]
+        return [u + 1]
 
     def bc2(model, arg):
         f, u, x, t = basic_symbols(model, arg)
         # assert torch.all(torch.isclose(x, torch.ones_like(x)))
         u_x, u_t = unpack(grad(u, arg))
-        return [u_x, u + 1]
+        return [u + 1]
 
     def ic(model, arg):
         f, u, x, t = basic_symbols(model, arg)
